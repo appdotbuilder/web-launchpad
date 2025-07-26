@@ -129,3 +129,145 @@ p.description {
   text-decoration: none;
   font-weight: bold;
 }
+
+/* Mobile Touch Optimizations */
+@layer components {
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .link-grid-item {
+    min-height: 110px;
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+    tap-highlight-color: rgba(59, 130, 246, 0.1);
+  }
+  
+  /* Ensure proper touch targets on mobile */
+  @media (max-width: 640px) {
+    .link-grid-item {
+      min-height: 120px;
+      padding: 1.25rem !important;
+    }
+    
+    .link-icon-container {
+      width: 60px !important;
+      height: 60px !important;
+    }
+    
+    .link-icon {
+      width: 44px !important;
+      height: 44px !important;
+    }
+    
+    .link-title {
+      font-size: 0.875rem !important;
+      line-height: 1.2 !important;
+      margin-top: 0.75rem !important;
+    }
+    
+    /* Larger tap targets for controls on mobile */
+    .mobile-controls {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    
+    .mobile-controls.visible {
+      opacity: 1;
+    }
+    
+    .mobile-control-button {
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+  }
+  
+  /* Improved hover states for desktop */
+  @media (min-width: 641px) {
+    .link-grid-item:hover {
+      transform: translateY(-2px) scale(1.02);
+    }
+  }
+  
+  /* Better text legibility */
+  .link-title {
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    word-break: break-word;
+    hyphens: auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Smooth animations */
+  .link-grid-item {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Active state for touch feedback */
+  .link-grid-item:active {
+    transform: scale(0.95);
+    transition-duration: 0.1s;
+  }
+  
+  /* Better focus states for accessibility */
+  .link-grid-item:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+  
+  /* Smooth scrolling for mobile */
+  @media (max-width: 640px) {
+    body {
+      -webkit-overflow-scrolling: touch;
+      overflow-scrolling: touch;
+    }
+    
+    /* Prevent text selection on mobile for better UX */
+    .link-grid-item {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+    
+    /* Prevent bounce scrolling on iOS */
+    html, body {
+      height: 100%;
+      overscroll-behavior: contain;
+    }
+  }
+  
+  /* Enhanced touch feedback */
+  .link-grid-item:active .link-icon-container {
+    transform: scale(0.9);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Grid spacing optimizations for very small screens */
+  @media (max-width: 375px) {
+    .grid {
+      gap: 0.75rem !important;
+    }
+    
+    .link-grid-item {
+      min-height: 100px !important;
+      padding: 1rem !important;
+    }
+  }
+}

@@ -310,22 +310,22 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-3 sm:py-4">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                 🚀 LaunchPad
               </h1>
-              <Badge variant="outline" className="hidden sm:inline-flex">
+              <Badge variant="outline" className="hidden md:inline-flex text-xs">
                 Welcome, {user.display_name}!
               </Badge>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
                 <DialogTrigger asChild>
-                  <Button size="sm" className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Link
+                  <Button size="sm" className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 h-9 px-3 sm:px-4">
+                    <Plus className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Add Link</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -389,9 +389,9 @@ function App() {
                 </DialogContent>
               </Dialog>
               
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
+              <Button variant="outline" size="sm" onClick={handleLogout} className="h-9 px-3 sm:px-4">
+                <LogOut className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Logout</span>
               </Button>
             </div>
           </div>
@@ -399,7 +399,7 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
         {links.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">📱</div>
@@ -418,55 +418,58 @@ function App() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-4 sm:gap-5 md:gap-6">
             {links.map((link: Link) => (
               <div
                 key={link.id}
-                className="group relative bg-white/70 backdrop-blur-sm rounded-2xl p-4 hover:bg-white/90 transition-all duration-200 hover:shadow-lg hover:scale-105 cursor-pointer border border-gray-200/50"
+                className="group relative bg-white/70 backdrop-blur-sm rounded-3xl p-5 sm:p-6 hover:bg-white/90 cursor-pointer border border-gray-200/50 link-grid-item"
+                tabIndex={0}
+                role="button"
+                aria-label={`Open ${link.title}`}
               >
                 {/* Link Click Area */}
                 <div
                   onClick={() => window.open(link.url, '_blank')}
-                  className="flex flex-col items-center space-y-2"
+                  className="flex flex-col items-center w-full h-full justify-center touch-manipulation"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden shadow-sm">
+                  <div className="link-icon-container w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden shadow-sm border border-gray-200/50">
                     <img
                       src={getFaviconUrl(link)}
                       alt={link.title}
-                      className="w-8 h-8 object-contain"
+                      className="link-icon w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 object-contain"
                       onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                         const target = e.target as HTMLImageElement;
                         target.src = '/favicon.ico';
                       }}
                     />
                   </div>
-                  <span className="text-xs font-medium text-gray-700 text-center leading-tight line-clamp-2">
+                  <span className="link-title text-sm sm:text-base font-medium text-gray-800 text-center leading-snug px-2 max-w-full mt-3 sm:mt-4">
                     {link.title}
                   </span>
                 </div>
 
-                {/* Edit/Delete Controls */}
-                <div className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-1">
+                {/* Edit/Delete Controls - Desktop Only */}
+                <div className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-1 hidden sm:flex">
                   <Button
                     size="sm"
                     variant="secondary"
-                    className="h-6 w-6 p-0 bg-blue-500 hover:bg-blue-600 text-white"
+                    className="h-8 w-8 p-0 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow-lg border-2 border-white"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleEditLink(link);
                     }}
                   >
-                    <Edit className="w-3 h-3" />
+                    <Edit className="w-3.5 h-3.5" />
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
                         size="sm"
                         variant="secondary"
-                        className="h-6 w-6 p-0 bg-red-500 hover:bg-red-600 text-white"
+                        className="h-8 w-8 p-0 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-lg border-2 border-white"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -488,6 +491,28 @@ function App() {
                     </AlertDialogContent>
                   </AlertDialog>
                 </div>
+
+                {/* Mobile Context Menu - Long Press Alternative */}
+                <div className="sm:hidden absolute inset-0 rounded-3xl"
+                     onContextMenu={(e) => {
+                       e.preventDefault();
+                       handleEditLink(link);
+                     }}
+                     onTouchStart={(e) => {
+                       // Add visual feedback for touch
+                       const target = e.currentTarget.parentElement;
+                       if (target) {
+                         target.style.transform = 'scale(0.95)';
+                       }
+                     }}
+                     onTouchEnd={(e) => {
+                       // Remove visual feedback
+                       const target = e.currentTarget.parentElement;
+                       if (target) {
+                         target.style.transform = '';
+                       }
+                     }}
+                />
               </div>
             ))}
           </div>
