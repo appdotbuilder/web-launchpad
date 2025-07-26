@@ -1,23 +1,46 @@
 
+import { db } from '../db';
+import { usersTable } from '../db/schema';
 import { type LoginUserInput, type AuthResponse } from '../schema';
+import { eq } from 'drizzle-orm';
 
-export async function loginUser(input: LoginUserInput): Promise<AuthResponse> {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is:
-    // 1. Find user by email in database
-    // 2. Verify password against stored hash
-    // 3. Generate JWT token for authentication
-    // 4. Return user data (without password) and token
-    // 5. Throw error if credentials are invalid
+export const loginUser = async (input: LoginUserInput): Promise<AuthResponse> => {
+  try {
+    // Find user by email
+    const users = await db.select()
+      .from(usersTable)
+      .where(eq(usersTable.email, input.email))
+      .execute();
+
+    if (users.length === 0) {
+      throw new Error('Invalid email or password');
+    }
+
+    const user = users[0];
+
+    // Verify password using Bun's built-in password verification
+    const isValidPassword = await Bun.password.verify(input.password, user.password_hash);
     
-    return Promise.resolve({
-        user: {
-            id: 1,
-            email: input.email,
-            display_name: 'John Doe',
-            created_at: new Date(),
-            updated_at: new Date()
-        },
-        token: 'placeholder_jwt_token'
-    } as AuthResponse);
-}
+    if (!isValidPassword) {
+      throw new Error('Invalid email or password');
+    }
+
+    // Generate a simple token (in production, use proper JWT)
+    const token = `token_${user.id}_${Date.now()}`;
+
+    // Return user data without password hash
+    return {
+      user: {
+        id: user.id,
+        email: user.email,
+        display_name: user.display_name,
+        created_at: user.created_at,
+        updated_at: user.updated_at
+      },
+      token
+    };
+  } catch (error) {
+    console.error('User login failed:', error);
+    throw error;
+  }
+};
